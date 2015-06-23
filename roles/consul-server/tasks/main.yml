@@ -1,0 +1,11 @@
+---
+- name: put sysconfig
+  template: >-
+    src=consul.j2
+    dest=/etc/sysconfig/consul
+    mode=0644
+  notify:
+    - reload consul
+
+- name: be sure consul service running and enabled
+  service: name=consul state=started enabled=yes

@@ -1,0 +1,4 @@
+---
+consul_version: 0.5.2
+consul_conf_dir: /etc/consul.d
+consul_data_dir: /tmp/consul

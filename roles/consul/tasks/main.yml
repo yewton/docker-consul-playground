@@ -1,0 +1,50 @@
+---
+- name: download consul
+  get_url: >-
+    url=https://dl.bintray.com/mitchellh/consul/{{ consul_version }}_linux_amd64.zip
+    dest=/tmp/consul-{{ consul_version }}_linux_amd64.zip
+    mode=0644
+
+- name: download consul web ui
+  get_url: >-
+    url=https://dl.bintray.com/mitchellh/consul/{{ consul_version }}_web_ui.zip
+    dest=/tmp/consul-{{ consul_version }}_web_ui.zip
+    mode=0644
+
+- name: be sure the consul directories are present
+  file: >-
+    path={{ item }}
+    state=directory
+    mode=0755
+  with_items:
+    - /opt/consul_{{ consul_version }}
+    - /opt/consul_{{ consul_version }}/bin
+    - /opt/consul_{{ consul_version }}/web_ui
+    - "{{ consul_data_dir }}"
+    - "{{ consul_conf_dir }}"
+
+- name: create current link
+  file: >-
+    state=link
+    dest=/opt/consul
+    src=/opt/consul_{{ consul_version }}
+
+- name: install consul binary
+  unarchive: >-
+    src=/tmp/consul-{{ consul_version }}_linux_amd64.zip
+    dest=/opt/consul/bin
+    creates=/opt/consul/bin/consul
+    copy=no
+
+- name: install consul web ui
+  unarchive: >-
+    src=/tmp/consul-{{ consul_version }}_web_ui.zip
+    dest=/opt/consul/web_ui
+    creates=/opt/consul/web_ui/dist
+    copy=no
+
+- name: put init script
+  copy: >-
+    src=consul
+    dest=/etc/init.d/consul
+    mode=0744
