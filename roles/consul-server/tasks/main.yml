@@ -9,3 +9,15 @@
 
 - name: be sure consul service running and enabled
   service: name=consul state=started enabled=yes
+
+- meta: flush_handlers
+
+- name: find the cluster nodes
+  shell: "grep -o 'consul-server-[0-9]\\+' /etc/hosts | grep -v $(hostname) | xargs | cat"
+  failed_when: no
+  changed_when: no
+  register: consul_cluster_nodes
+
+- name: join to the cluster
+  command: /opt/consul/bin/consul join {{ consul_cluster_nodes.stdout }}
+  when: consul_cluster_nodes.stdout != ""

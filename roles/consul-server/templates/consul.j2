@@ -1,2 +1,2 @@
 GOMAXPROCS=2
-OPTIONS="-server -bootstrap-expect 1 -data-dir /tmp/consul -ui-dir /opt/consul/web_ui/dist -client=0.0.0.0"
+OPTIONS="-server -bootstrap-expect {{ consul_bootstrap_expect }} -data-dir /tmp/consul -ui-dir /opt/consul/web_ui/dist -client=0.0.0.0"

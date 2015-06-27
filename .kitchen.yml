@@ -35,14 +35,37 @@ verifier:
   ruby_bindir: '/usr/bin'
 
 suites:
-  - name: consul-server
-    driver_config:
-      container_name: consul_server
-      hostname: consul-server
+  - &consul-server
+    name: &cs01
+      consul-server-01
+    driver: &consul-driver
+      hostname: *cs01
+      container_name: consul_server_01
       publish:
-        - 8400:8400
-        - 8500:8500
-        - 8600:8600
+        - 8400
+        - 8500
+        - 8600
+        - 8600/udp
     provisioner:
       hosts: consul-server
       playbook: consul-server.yml
+      extra_vars:
+        consul_bootstrap_expect: 3
+  - <<: *consul-server
+    name: &cs02
+      consul-server-02
+    driver:
+      <<: *consul-driver
+      hostname: *cs02
+      container_name: consul_server_02
+      link: consul_server_01
+  - <<: *consul-server
+    name: &cs03
+      consul-server-03
+    driver:
+      <<: *consul-driver
+      hostname: *cs03
+      container_name: consul_server_03
+      link:
+        - consul_server_01
+        - consul_server_02
