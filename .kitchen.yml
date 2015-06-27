@@ -12,6 +12,7 @@ driver:
     - yum install -y centos-release-SCL
     - yum install -y ruby193 ruby193-ruby-devel
     - source /opt/rh/ruby193/enable
+    - echo "/opt/rh/ruby193/root/usr/lib64" | tee -a /etc/ld.so.conf
     - ldconfig
     - ln -s /opt/rh/ruby193/root/usr/bin/ruby /usr/bin/ruby
     - ln -s /opt/rh/ruby193/root/usr/bin/gem /usr/bin/gem
@@ -29,6 +30,9 @@ provisioner:
   playbook: default.yml
   ansible_verbose: true
   ansible_verbosity: 2
+
+verifier:
+  ruby_bindir: '/usr/bin'
 
 suites:
   - name: consul-server
